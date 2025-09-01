@@ -4,7 +4,7 @@ from typing import List
 import models
 import schemas
 from database import SessionLocal, engine
-from datetime import datetime
+from datetime import datetime, timezone
 
 # Create database tables
 models.Base.metadata.create_all(bind=engine)
@@ -65,7 +65,7 @@ def update_wallet(user_id: int, wallet_update: schemas.WalletUpdate, db: Session
     # Update balance
     old_balance = wallet.balance
     wallet.balance += wallet_update.amount
-    wallet.updated_at = datetime.utcnow()
+    wallet.updated_at = datetime.now(timezone.utc)
     
     # Create transaction record
     transaction = models.Transaction(
@@ -73,7 +73,7 @@ def update_wallet(user_id: int, wallet_update: schemas.WalletUpdate, db: Session
         amount=wallet_update.amount,
         transaction_type="CREDIT" if wallet_update.amount > 0 else "DEBIT",
         description=wallet_update.description or f"Wallet update: {wallet_update.amount}",
-        created_at=datetime.utcnow()
+        created_at=datetime.now(timezone.utc)
     )
     db.add(transaction)
     
