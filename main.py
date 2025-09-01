@@ -5,6 +5,7 @@ import models
 import schemas
 from database import SessionLocal, engine
 from datetime import datetime, timezone
+import os
 
 # Create database tables
 models.Base.metadata.create_all(bind=engine)
